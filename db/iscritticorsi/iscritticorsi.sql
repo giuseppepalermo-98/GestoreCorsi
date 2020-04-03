@@ -13,7 +13,7 @@
 -- Dump della struttura del database iscritticorsi
 CREATE DATABASE IF NOT EXISTS `iscritticorsi` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `iscritticorsi`;
-
+test
 
 -- Dump della struttura di tabella iscritticorsi.corso
 CREATE TABLE IF NOT EXISTS `corso` (

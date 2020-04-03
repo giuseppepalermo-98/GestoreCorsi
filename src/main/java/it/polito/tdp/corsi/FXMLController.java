@@ -5,12 +5,16 @@
 package it.polito.tdp.corsi;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -69,7 +73,7 @@ public class FXMLController {
     	}
     	
     	//l'input è corretto
-    	List<Corso> corsi = this.model.getCorsiByPeriodo(pd);
+    	List<Corso> corsi = new LinkedList<Corso>(this.model.getCorsiByPeriodo(pd));
     	for(Corso c : corsi) {
     		txtRisultato.appendText(c.toString() + "\n");
     	}
@@ -96,7 +100,7 @@ public class FXMLController {
     		return;
     	}
     	
-    	Map<Corso, Integer> statistiche = this.model.getIscrittiByPeriodo(pd);
+    	Map<Corso, Integer> statistiche = new HashMap<Corso, Integer>(this.model.getIscrittiByPeriodo(pd));
     	
     	for(Corso c : statistiche.keySet()) {
     		txtRisultato.appendText(c.getNome() + " " + statistiche.get(c) + "\n");
@@ -105,12 +109,50 @@ public class FXMLController {
 
     @FXML
     void stampaDivisione(ActionEvent event) {
+    	//Dato un corso mi aspetto un output cosi:
+    	//Informatica 25
+    	//analisi 200
+    	this.txtRisultato.clear();
+    	String codins=this.txtCorso.getText();
+    	
+    	if(!this.model.esisteCorso(codins)) {
+    		this.txtRisultato.appendText("Il corso non esiste!");
+    		return;
+    	}
+    	
+    	
+    	//Map<String, Integer> statistiche= this.model.getDivisioneCorso(new Corso(codins, null,null,null));
+    	Map<String, Integer> statistiche= this.model.getDivisioneCDS(new Corso(codins, null,null,null));
 
+    	
+    	for(String s: statistiche.keySet()) {
+    		this.txtRisultato.appendText(s+" "+ statistiche.get(s) +"\n");
+    	}
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
-
+    	this.txtRisultato.clear();
+    	
+    	String codins=this.txtCorso.getText();
+    	
+    	//Controllo se il codice coicide con un codice esistente
+    	if(!this.model.esisteCorso(codins)) {
+    		this.txtRisultato.appendText("Il corso non esiste!");
+    		return;
+    	}
+    	//Fine controllo!
+    	
+    	List<Studente>studenti= new LinkedList<Studente>(this.model.getStudentibyCorso(new Corso(codins, null,null,null)));
+    	
+    	if(studenti.size()==0) {
+    		this.txtRisultato.setText("Questo corso non ha studenti");
+    		return;
+    	}
+    	
+    	for(Studente s: studenti){
+    		this.txtRisultato.appendText(s.toString() + "\n");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
